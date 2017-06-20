@@ -28,7 +28,7 @@ app.get('/', function(req, res) {
 });
 
 // Test route
-app.get('/test', function(req, res) {
+app.post('/test', function(req, res) {
     res.send("Chunk Norris is testing...");
 });
 
