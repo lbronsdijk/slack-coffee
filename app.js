@@ -4,8 +4,8 @@ var request = require('request');
 
 // Store our app's ID and Secret. These we got from Step 1. 
 // For this tutorial, we'll keep your API credentials right here. But for an actual app, you'll want to  store them securely in environment variables. 
-var clientId = '123456789.123456789';
-var clientSecret = '11111a2222b3333c44444e';
+var clientId = '200533262887.201265587335';
+var clientSecret = '5b73aec95924431571f61471018e0228';
 
 // Instantiates Express and assigns our app variable to it
 var app = express();
@@ -23,6 +23,14 @@ app.listen(port, function () {
 app.get('/', function(req, res) {
     res.send({
         "Message": "Server up and running!",
+        "RequestPath": req.url
+    })
+});
+
+// Test route
+app.get('/test', function(req, res) {
+    res.send({
+        "Message": "Chunk Norris is testing...",
         "RequestPath": req.url
     })
 });
