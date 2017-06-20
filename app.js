@@ -11,12 +11,12 @@ var clientSecret = '11111a2222b3333c44444e';
 var app = express();
 
 // Again, we define a port we want to listen to
-const PORT = 3000;
+var port = process.env.PORT || 3000;
 
 // Lets start our server
-app.listen(PORT, function () {
+app.listen(port, function () {
     //Callback triggered when server is successfully listening. Hurray!
-    console.log("Example app listening on port " + PORT);
+    console.log("Example app listening on port " + port);
 });
 
 // This route handles GET requests to our root ngrok address and responds with the same "Ngrok is working message" we used before
