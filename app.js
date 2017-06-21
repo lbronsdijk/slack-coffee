@@ -1,17 +1,16 @@
-// Import express and request modules
+// Require modules
 var express = require('express');
 var request = require('request');
 var bodyParser = require('body-parser');
 
-// Store our app's ID and Secret. These we got from Step 1. 
-// For this tutorial, we'll keep your API credentials right here. But for an actual app, you'll want to  store them securely in environment variables. 
+// Slack credentials. 
 var clientId = '200533262887.201265587335';
 var clientSecret = '5b73aec95924431571f61471018e0228';
 
-// Instantiates Express and assigns our app variable to it
+// Init Express
 var app = express();
 
-// Again, we define a port we want to listen to
+// Define port
 var port = process.env.PORT || 3000;
 
 // Support json encoded bodies
@@ -22,38 +21,42 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Lets start our server
 app.listen(port, function () {
     //Callback triggered when server is successfully listening. Hurray!
-    console.log("Example app listening on port " + port);
+    console.log("Slack Coffee app listening on port " + port);
 });
 
-// This route handles GET requests to our root ngrok address and responds with the same "Ngrok is working message" we used before
+// Status command
 app.get('/', function(req, res) {
     res.send({
-        "Message": "Server up and running!",
+        "Message": "Slack Coffee server up and running!",
         "RequestPath": req.url
     })
 });
 
-// Test route
+// Test command
 app.post('/test', function(req, res) {
-    res.send("Chunk Norris is testing...");
-    console.log(req.body.text);
+    var responseText = "Chuck Norris is testing...";
+
+    if (req.body.text) {
+        responseText = reponseText + " You said: " + req.body.text;
+    }
+
+    res.send(responseText);
 });
 
-// This route handles get request to a /oauth endpoint. We'll use this endpoint for handling the logic of the Slack oAuth process behind our app.
+// Slack oAuth
 app.get('/oauth', function(req, res) {
-    // When a user authorizes an app, a code query parameter is passed on the oAuth endpoint. If that code is not there, we respond with an error message
+    // When a user authorizes an app, a code query parameter is passed on the oAuth endpoint. 
+    // If that code is not there, we respond with an error message
     if (!req.query.code) {
         res.status(500);
         res.send({"Error": "Looks like we're not getting code."});
         console.log("Looks like we're not getting code.");
     } else {
-        // If it's there...
-
-        // We'll do a GET call to Slack's `oauth.access` endpoint, passing our app's client ID, client secret, and the code we just got as query parameters.
+        // We'll do a GET call to Slack's `oauth.access` endpoint.
         request({
-            url: 'https://slack.com/api/oauth.access', //URL to hit
-            qs: {code: req.query.code, client_id: clientId, client_secret: clientSecret}, //Query string data
-            method: 'GET', //Specify the method
+            url: 'https://slack.com/api/oauth.access',
+            qs: {code: req.query.code, client_id: clientId, client_secret: clientSecret},
+            method: 'GET',
 
         }, function (error, response, body) {
             if (error) {
@@ -64,9 +67,4 @@ app.get('/oauth', function(req, res) {
             }
         })
     }
-});
-
-// Route the endpoint that our slash command will point to and send back a simple response to indicate that ngrok is working
-app.post('/command', function(req, res) {
-    res.send({"Message": "Server up and running!"})
 });
