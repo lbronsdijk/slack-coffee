@@ -1,7 +1,0 @@
-var config = {};
-
-config.port = ;
-config.clientId = '';
-config.clientSecret = '';
-
-module.exports = config;
