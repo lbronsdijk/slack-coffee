@@ -2,16 +2,17 @@
 var express = require('express');
 var request = require('request');
 var bodyParser = require('body-parser');
+var config = require('./config');
 
 // Slack credentials. 
-var clientId = '200533262887.201265587335';
-var clientSecret = '5b73aec95924431571f61471018e0228';
+var clientId = process.env.CLIENT_ID || config.clientId;
+var clientSecret = process.env.CLIENT_SECRET || config.clientSecret;
 
 // Init Express
 var app = express();
 
 // Define port
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || config.port;
 
 // Support json encoded bodies
 app.use(bodyParser.json());
