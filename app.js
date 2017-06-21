@@ -30,6 +30,7 @@ app.get('/', function(req, res) {
 // Test route
 app.post('/test', function(req, res) {
     res.send("Chunk Norris is testing...");
+    console.log(req);
 });
 
 // This route handles get request to a /oauth endpoint. We'll use this endpoint for handling the logic of the Slack oAuth process behind our app.
