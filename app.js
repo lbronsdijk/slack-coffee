@@ -4,15 +4,8 @@ var request = require('request');
 var bodyParser = require('body-parser');
 var config = require('./config');
 
-// Slack credentials. 
-var clientId = process.env.CLIENT_ID || config.clientId;
-var clientSecret = process.env.CLIENT_SECRET || config.clientSecret;
-
 // Init Express
 var app = express();
-
-// Define port
-var port = process.env.PORT || config.port;
 
 // Support json encoded bodies
 app.use(bodyParser.json());
@@ -20,9 +13,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Lets start our server
-app.listen(port, function () {
+app.listen(config.port, function () {
     //Callback triggered when server is successfully listening. Hurray!
-    console.log("Slack Coffee app listening on port " + port);
+    console.log("Slack Coffee app listening on port " + config.port);
 });
 
 // Status command
@@ -56,7 +49,7 @@ app.get('/oauth', function(req, res) {
         // We'll do a GET call to Slack's `oauth.access` endpoint.
         request({
             url: 'https://slack.com/api/oauth.access',
-            qs: {code: req.query.code, client_id: clientId, client_secret: clientSecret},
+            qs: {code: req.query.code, client_id: config.clientId, client_secret: config.clientSecret},
             method: 'GET',
 
         }, function (error, response, body) {
