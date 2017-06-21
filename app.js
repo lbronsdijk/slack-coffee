@@ -37,7 +37,7 @@ app.post('/test', function(req, res) {
     var responseText = "Chuck Norris is testing...";
 
     if (req.body.text) {
-        responseText = reponseText + " You said: " + req.body.text;
+        responseText = responseText + " You said: " + req.body.text;
     }
 
     res.send(responseText);
