@@ -13,6 +13,11 @@ var app = express();
 // Again, we define a port we want to listen to
 var port = process.env.PORT || 3000;
 
+// Support json encoded bodies
+app.use(bodyParser.json());
+// Support encoded bodies
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // Lets start our server
 app.listen(port, function () {
     //Callback triggered when server is successfully listening. Hurray!
@@ -30,7 +35,7 @@ app.get('/', function(req, res) {
 // Test route
 app.post('/test', function(req, res) {
     res.send("Chunk Norris is testing...");
-    console.log(req);
+    console.log(req.body.text);
 });
 
 // This route handles get request to a /oauth endpoint. We'll use this endpoint for handling the logic of the Slack oAuth process behind our app.
