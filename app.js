@@ -10,6 +10,7 @@ var app = express();
 
 // Init storage sync
 storage.initSync();
+storage.setItemSync('temp', 0);
 
 // Support json encoded bodies
 app.use(bodyParser.json());
@@ -24,24 +25,28 @@ app.listen(config.port, function () {
 
 // Status command
 app.get('/', function(req, res) {
-    // Set temp value
-    storage.setItemSync('temp', 'Luc');
-
     res.send({
-        'Message': "Slack Coffee server up and running! " + storage.getItemSync('temp'),
+        'Message': "Slack Coffee server up and running! ",
         'RequestPath': req.url
     })
 });
 
-// Test command
-app.post('/test', function(req, res) {
-    var responseText = "Chuck Norris is testing...";
+// Update temperature
+app.post('/temperature/update', function(req, res) {
+    if (!req.body.temp) {
+        res.status(500);
+        res.send({'Error': "Looks like we're not getting a valid temperature."});
+        console.log("Looks like we're not getting a valid temperature.");
+    } else {
+        storage.setItemSync('temp', req.body.temp);
 
-    if (req.body.text) {
-        responseText = responseText + " You said: " + req.body.text;
-    }
-
-    res.send(responseText);
+        res.send({
+            'Success': true,
+            'Data': {
+                'Temp': storage.getItemSync('temp')
+            },
+        });
+    }   
 });
 
 // Slack oAuth
@@ -68,4 +73,9 @@ app.get('/oauth', function(req, res) {
             }
         })
     }
+});
+
+// Coffee command
+app.post('/coffee', function(req, res) {
+    res.send("Your coffee is " + storage.getItemSync('temp') + " degrees.");
 });
