@@ -2,10 +2,14 @@
 var express = require('express');
 var request = require('request');
 var bodyParser = require('body-parser');
+var storage = require('node-persist');
 var config = require('./config');
 
 // Init Express
 var app = express();
+
+// Init storage sync
+storage.initSync();
 
 // Support json encoded bodies
 app.use(bodyParser.json());
@@ -20,9 +24,12 @@ app.listen(config.port, function () {
 
 // Status command
 app.get('/', function(req, res) {
+    // Set temp value
+    storage.setItemSync('temp', 'Luc');
+
     res.send({
-        "Message": "Slack Coffee server up and running!",
-        "RequestPath": req.url
+        'Message': "Slack Coffee server up and running! " + storage.getItemSync('temp'),
+        'RequestPath': req.url
     })
 });
 
@@ -43,7 +50,7 @@ app.get('/oauth', function(req, res) {
     // If that code is not there, we respond with an error message
     if (!req.query.code) {
         res.status(500);
-        res.send({"Error": "Looks like we're not getting code."});
+        res.send({'Error': "Looks like we're not getting code."});
         console.log("Looks like we're not getting code.");
     } else {
         // We'll do a GET call to Slack's `oauth.access` endpoint.
