@@ -11,7 +11,7 @@ module.exports = {
         }
 
         if (temp < 60) {
-            text = "Your coffee becomes a Ice Coffee.";
+            text = "Your coffee becomes Iced Coffee.";
         }
 
         return ":coffee: " + text;
