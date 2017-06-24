@@ -85,7 +85,7 @@ app.get('/oauth', function(req, res) {
 // Coffee command
 app.post('/command/coffee', function(req, res) {
     // Check is temperature check variable is passed
-    if (req.body.temp) {
+    if (req.body.text == "temperature") {
         res.send("Your coffee is " + storage.getItemSync('temp') + " &#8451;.");
     }
 
