@@ -6,13 +6,21 @@
 Slack Coffee is an app build for Slack channels. It tells you if your coffee is good to go, to hot to drink, or when it becomes a Iced Coffee (before it is to late).
 
 #### Install
-Install packages with NPM (or Yarn):
-`npm install` or `yarn install`
+Install Slack Coffee with `npm` (or Yarn):
+```
+npm install
+``` 
+or 
+```
+yarn install
+```
 
 Setup a `.env` configuration file, which is based on `.env.dist`. Don't forget to set all values.
 
 Run the Slack Coffee server:
-`npm dev`
+```
+npm dev
+```
 
 #### Slack command
 You need to create your own command within your Slack app to use Slack Coffee. Use `/command/coffee` as endpoint.
