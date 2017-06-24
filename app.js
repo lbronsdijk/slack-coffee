@@ -1,5 +1,6 @@
 // Require modules
 var config = require('./config');
+var text = require('./src/textResolver');
 
 var express = require('express');
 var request = require('request');
@@ -51,7 +52,7 @@ app.post('/temperature/update', function(req, res) {
         });
 
         // Send Slack notification
-        slack.alert(":coffee: Your coffee is " + storage.getItemSync('temp') + " degrees.");
+        slack.note(text.temperature(storage.getItemSync('temp')));
     }   
 });
 
@@ -83,5 +84,10 @@ app.get('/oauth', function(req, res) {
 
 // Coffee command
 app.post('/command/coffee', function(req, res) {
-    res.send(":coffee: Your coffee is " + storage.getItemSync('temp') + " degrees.");
+    // Check is temperature check variable is passed
+    if (req.body.temp) {
+        res.send("Your coffee is " + storage.getItemSync('temp') + " &#8451;.");
+    }
+
+    res.send(text.temperature(storage.getItemSync('temp')));
 });
