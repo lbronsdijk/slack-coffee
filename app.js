@@ -1,9 +1,11 @@
 // Require modules
+var config = require('./config');
+
 var express = require('express');
 var request = require('request');
 var bodyParser = require('body-parser');
 var storage = require('node-persist');
-var config = require('./config');
+var slack = require('slack-notify')(config.slackHookUri);
 
 // Init Express
 var app = express();
@@ -38,6 +40,7 @@ app.post('/temperature/update', function(req, res) {
         res.send({'Error': "Looks like we're not getting a valid temperature."});
         console.log("Looks like we're not getting a valid temperature.");
     } else {
+        // Store temperature value
         storage.setItemSync('temp', req.body.temp);
 
         res.send({
@@ -46,6 +49,9 @@ app.post('/temperature/update', function(req, res) {
                 'Temp': storage.getItemSync('temp')
             },
         });
+
+        // Send Slack notification
+        slack.alert(":coffee: Your coffee is " + storage.getItemSync('temp') + " degrees.");
     }   
 });
 
@@ -76,6 +82,6 @@ app.get('/oauth', function(req, res) {
 });
 
 // Coffee command
-app.post('/coffee', function(req, res) {
-    res.send("Your coffee is " + storage.getItemSync('temp') + " degrees.");
+app.post('/command/coffee', function(req, res) {
+    res.send(":coffee: Your coffee is " + storage.getItemSync('temp') + " degrees.");
 });
