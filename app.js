@@ -14,6 +14,8 @@ var app = express();
 // Init storage sync
 storage.initSync();
 storage.setItemSync('temp', 0);
+storage.setItemSync('currentState', 0);
+
 
 // Support json encoded bodies
 app.use(bodyParser.json());
@@ -41,8 +43,39 @@ app.post('/temperature/update', function(req, res) {
         res.send({'Error': "Looks like we're not getting a valid temperature."});
         console.log("Looks like we're not getting a valid temperature.");
     } else {
+        // Log temp
+        console.log("Received temperature: " + req.body.temp);
+
+        storage.setItemSync('previousState', storage.getItemSync('currentState'));
+
+        if (req.body.temp > 80) {
+            storage.setItemSync('currentState', 1);
+        }
+
+        if (req.body.temp >= 60 && req.body.temp <= 80) {
+            storage.setItemSync('currentState', 2);
+        }
+
+        if (req.body.temp < 60) {
+            storage.setItemSync('currentState', 3);
+        }
+
+        if (req.body.temp < 40) {
+            storage.setItemSync('currentState', 4);
+        }
+
+        console.log("Current state: " + storage.getItemSync('currentState'));
+        console.log("previousState: " + storage.getItemSync('previousState'));
+
         // Store temperature value
         storage.setItemSync('temp', req.body.temp);
+
+        if (storage.getItemSync('currentState') != storage.getItemSync('previousState')) {
+            // Send notification?
+            console.log("Notification: Yes");
+            // Send Slack notification
+            slack.note(text.temperature(storage.getItemSync('temp')));
+        }
 
         res.send({
             'Success': true,
@@ -50,9 +83,6 @@ app.post('/temperature/update', function(req, res) {
                 'Temp': storage.getItemSync('temp')
             },
         });
-
-        // Send Slack notification
-        slack.note(text.temperature(storage.getItemSync('temp')));
     }   
 });
 
